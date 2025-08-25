@@ -2,11 +2,12 @@
 import { Card, CardContent, CardHeader } from './components/card';
 import { Pokemon, Hamburger } from './assets/index'
 import Button from './components/ui/button/Button.vue';
+import Input from './components/ui/input/Input.vue';
 </script>
 
 <template>
   <header>
-    <Card style="background-color: #FED873; border-radius: 0 0 20px 20px; padding: 100px;">
+    <Card style="background-color: #FED873; border-radius: 0 0 20px 20px; padding-top: 80px;">
       <CardHeader>
         <nav style="display: flex; justify-content: space-between; align-items: center; gap: 2rem;">
           <span style="font-weight: 600;">Pika!</span>
@@ -17,7 +18,7 @@ import Button from './components/ui/button/Button.vue';
         </nav>
       </CardHeader>
       <CardContent style="margin-top: 4rem;">
-        <input 
+        <Input 
           type="search" 
           placeholder="Search Pokémon..."
           style="width: 100%; padding: 15px; border-radius: 20px; border: 1px solid #ddd;"
