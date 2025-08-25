@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Card, CardContent, CardHeader } from './components/card';
 import { Pokemon, Hamburger } from './assets/index'
+import Button from './components/ui/button/Button.vue';
 </script>
 
 <template>
@@ -22,6 +23,29 @@ import { Pokemon, Hamburger } from './assets/index'
           style="width: 100%; padding: 15px; border-radius: 20px; border: 1px solid #ddd;"
         />
       </CardContent>
+  <div class="p-4">
+    <!-- Default button -->
+    <Button>Click me</Button>
+    
+    <!-- Different variants -->
+    <Button variant="destructive">Delete</Button>
+    <Button variant="outline">Outline</Button>
+    <Button variant="secondary">Secondary</Button>
+    <Button variant="ghost">Ghost</Button>
+    <Button variant="link">Link</Button>
+    
+    <!-- Different sizes -->
+    <Button size="sm">Small</Button>
+    <Button size="default">Default</Button>
+    <Button size="lg">Large</Button>
+    <Button size="icon">🚀</Button>
+    
+    <!-- Disabled state -->
+    <Button disabled>Disabled</Button>
+    
+    <!-- With custom classes -->
+    <Button class="w-full">Full Width</Button>
+  </div>
     </Card>
   </header>
 </template>
