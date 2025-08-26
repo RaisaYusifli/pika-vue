@@ -1,0 +1,1 @@
+export const baseUrl = 'https://mock.apidog.com/m1/1050373-1037794-default/pika'
