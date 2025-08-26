@@ -1,31 +1,52 @@
-import type { AppError } from '@acb/core-module/errors'
-import { ref } from 'vue'
-import {
-  useIdentifactionByPinQuery,
-} from '../../../entities/@entry/api/queries/identification-by-pin.query'
+import { FetchAllParams, PaginatedResponse, useFetchAllQuery } from '@/api/queries/fetch-all.qeuries';
+import { unref, Ref } from 'vue';
 
-interface UseActivateOptions {
-  onSuccess?: (response: any) => void
-  onError?: (error: AppError) => void
+// Define Pokemon interface
+export interface Pokemon {
+  id: number;
+  name: string;
+  type: string;
+  height?: number;
+  weight?: number;
+  abilities?: string[];
+  sprite?: string;
 }
 
-export function useGetAllPokemons(options?: UseActivateOptions) {
-  const isLoading = ref(false)
+interface UseGetAllPokemonsOptions {
+  page?: Ref<number> | number;
+  perPage?: Ref<number> | number;
+  sort?: Ref<string> | string;
+  filter?: Ref<any> | any;
+  enabled?: Ref<boolean> | boolean;
+  onSuccess?: (data: PaginatedResponse<Pokemon>) => void;
+  onError?: (error: Error) => void;
+}
 
-  const {
-    mutate: identificationMutateByPin,
-  } = useIdentifactionByPinQuery({
-    onSuccess: (response) => {
-      options?.onSuccess?.(response)
-    },
-    onError: (err: any) => {
-      const updateError = makeUpdateEntryError(err)
-      options?.onError?.(updateError)
-    },
-  })
+export function useGetAllPokemons(options?: UseGetAllPokemonsOptions) {
+  // Extract params and query options
+  const params: FetchAllParams = {
+    page: options?.page,
+    perPage: options?.perPage,
+    sort: options?.sort,
+    filter: options?.filter,
+  };
 
+  // Use the query hook
+  const queryResult = useFetchAllQuery<Pokemon>('pokemons', params, {
+    enabled: unref(options?.enabled) ?? true,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    onSuccess: options?.onSuccess,
+    onError: options?.onError,
+  });
+
+  // Return the query result with additional helpers
   return {
-    identificationMutateByPin,
-    isLoading,
-  }
+    data: queryResult.data,
+    isLoading: queryResult.isLoading,
+    isFetching: queryResult.isFetching,
+    isError: queryResult.isError,
+    error: queryResult.error,
+    refetch: queryResult.refetch,
+    isSuccess: queryResult.isSuccess,
+  };
 }

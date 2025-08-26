@@ -18,9 +18,50 @@ export interface PaginatedResponse<T> {
   perPage: number;
 }
 
+// Helper function to build query string
+function buildQueryString(params: FetchAllParams): string {
+  const queryParams = new URLSearchParams();
+  
+  const page = unref(params?.page);
+  const perPage = unref(params?.perPage);
+  const sort = unref(params?.sort);
+  const filter = unref(params?.filter);
+  const meta = unref(params?.meta);
+  
+  if (page) {
+    queryParams.append('page', page.toString());
+  }
+  
+  if (perPage) {
+    queryParams.append('limit', perPage.toString());
+  }
+  
+  if (sort) {
+    queryParams.append('sort', sort);
+  }
+  
+  if (filter && typeof filter === 'object') {
+    Object.entries(filter).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        queryParams.append(key, String(value));
+      }
+    });
+  }
+  
+  if (meta && typeof meta === 'object') {
+    Object.entries(meta).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        queryParams.append(`meta_${key}`, String(value));
+      }
+    });
+  }
+  
+  return queryParams.toString();
+}
+
 export function useFetchAllQuery<T = Record<string, unknown>>(
   resource: string,
-  params?: FetchAllParams<T>,
+  params?: FetchAllParams<Record<string, unknown>>,
   options?: Omit<UseQueryOptions<PaginatedResponse<T>>, 'queryKey' | 'queryFn'>,
 ) {
   // Create reactive query key that updates when params change
@@ -44,17 +85,15 @@ export function useFetchAllQuery<T = Record<string, unknown>>(
 
   // Create the query function
   const queryFn = async () => {
-    // const queryParams = {
-    //   page: unref(params?.page) || 1,
-    //   perPage: unref(params?.perPage) || 20,
-    //   sort: unref(params?.sort),
-    //   filter: unref(params?.filter),
-    //   meta: unref(params?.meta),
-    // };
-      const response = await fetch(`${baseUrl}${getPokemons}`, {
+    const queryString = params ? buildQueryString(params) : '';
+    const url = `${baseUrl}${getPokemons}${queryString ? `?${queryString}` : ''}`;
+    
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        // Add auth header if needed
+        // 'Authorization': `Bearer ${getAuthToken()}`,
       },
     });
     
@@ -63,9 +102,16 @@ export function useFetchAllQuery<T = Record<string, unknown>>(
     }
     
     const data = await response.json();
-    console.log("data: " , data)
+    console.log("data:", data);
     
-    return data;
+    // Transform the response if needed to match PaginatedResponse interface
+    // If your API returns different structure, adapt here
+    return {
+      data: data.results || data.data || data,
+      total: data.total || data.count || data.length || 0,
+      page: unref(params?.page) || 1,
+      perPage: unref(params?.perPage) || 20,
+    };
   };
 
   return useQuery({
