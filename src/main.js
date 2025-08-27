@@ -5,6 +5,8 @@ import { VueQueryPlugin, QueryClient } from "@tanstack/vue-query";
 import router from "./routes";
 import App from "./App.vue";
 import messages from "./i18n/messages";
+import Toast, { POSITION } from "vue-toastification";
+import "vue-toastification/dist/index.css";
 
 const i18n = createI18n({
   legacy: false,
@@ -29,4 +31,17 @@ const app = createApp(App);
 app.use(i18n);
 app.use(router);
 app.use(VueQueryPlugin, { queryClient });
+app.use(Toast, {
+  position: POSITION.TOP_RIGHT,
+  timeout: 3000,
+  closeOnClick: true,
+  pauseOnFocusLoss: true,
+  pauseOnHover: true,
+  draggable: true,
+  showCloseButtonOnHover: false,
+  hideProgressBar: false,
+  closeButton: "button",
+  icon: true,
+  rtl: false,
+});
 app.mount("#app");

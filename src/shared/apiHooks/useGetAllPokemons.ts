@@ -1,16 +1,6 @@
-import { FetchAllParams, PaginatedResponse, useFetchAllQuery } from '@/api/queries/fetch-all.qeuries';
+import { FetchAllParams, useFetchAllQuery } from '@/api/queries/fetch-all.qeuries';
+import { PaginatedResponse, Pokemon } from '@/model/types';
 import { unref, Ref } from 'vue';
-
-// Define Pokemon interface
-export interface Pokemon {
-  id: number;
-  name: string;
-  type: string;
-  height?: number;
-  weight?: number;
-  abilities?: string[];
-  sprite?: string;
-}
 
 interface UseGetAllPokemonsOptions {
   page?: Ref<number> | number;
@@ -31,7 +21,7 @@ export function useGetAllPokemons(options?: UseGetAllPokemonsOptions) {
     filter: options?.filter,
   };
 
-  // Use the query hook
+  // Use the query hook with Pokemon type
   const queryResult = useFetchAllQuery<Pokemon>('pokemons', params, {
     enabled: unref(options?.enabled) ?? true,
     staleTime: 1000 * 60 * 5, // 5 minutes

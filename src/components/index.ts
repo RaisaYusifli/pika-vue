@@ -1,1 +1,2 @@
-export {default as Header} from './header/Header.vue'
+export {default as Header} from './pokemonHeader/Header.vue'
+export {default as PokemonCard} from './pokemonCard/PokemonCard.vue'

@@ -11,11 +11,20 @@ export interface FetchAllParams<T = Record<string, unknown>> {
   meta?: Ref<T> | T;
 }
 
+// Generic API Response interface
+export interface ApiResponse<T> {
+  content: T[];
+  page: {
+    number: number;
+    size: number;
+    totalPages: number;
+    totalElements: number;
+  };
+}
+
+// Wrapper for consistency with your existing code
 export interface PaginatedResponse<T> {
-  data: T[];
-  total: number;
-  page: number;
-  perPage: number;
+  content: ApiResponse<T>;
 }
 
 // Helper function to build query string
@@ -84,7 +93,7 @@ export function useFetchAllQuery<T = Record<string, unknown>>(
   });
 
   // Create the query function
-  const queryFn = async () => {
+  const queryFn = async (): Promise<PaginatedResponse<T>> => {
     const queryString = params ? buildQueryString(params) : '';
     const url = `${baseUrl}${getPokemons}${queryString ? `?${queryString}` : ''}`;
     
@@ -102,15 +111,12 @@ export function useFetchAllQuery<T = Record<string, unknown>>(
     }
     
     const data = await response.json();
-    console.log("data:", data);
+    console.log("API Response:", data);
     
-    // Transform the response if needed to match PaginatedResponse interface
-    // If your API returns different structure, adapt here
+    // Return the data as-is since it already matches our PaginatedResponse structure
+    // The API returns { content: [...], page: {...} }
     return {
-      data: data.results || data.data || data,
-      total: data.total || data.count || data.length || 0,
-      page: unref(params?.page) || 1,
-      perPage: unref(params?.perPage) || 20,
+      content: data
     };
   };
 
