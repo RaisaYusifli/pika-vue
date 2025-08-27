@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {Header} from './components/index'
 import { Card, CardHeader, CardFooter, CardContent } from './components/card';
-import { useGetAllPokemons } from './shared/hooks/useGetAllPokemons';
+import { useGetAllPokemons } from './shared/apiHooks/useGetAllPokemons';
 
 const { data } = useGetAllPokemons();
 console.log("pokemons get all data: ", data)
