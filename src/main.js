@@ -1,12 +1,15 @@
+import "vue-toastification/dist/index.css";
 import "./style.css";
-import { createApp } from "vue";
-import { createI18n } from "vue-i18n";
+
 import { VueQueryPlugin, QueryClient } from "@tanstack/vue-query";
+import Toast, { POSITION } from "vue-toastification";
+import { createI18n } from "vue-i18n";
+import { createApp } from "vue";
+
+import messages from "./i18n/messages";
 import router from "./routes";
 import App from "./App.vue";
-import messages from "./i18n/messages";
-import Toast, { POSITION } from "vue-toastification";
-import "vue-toastification/dist/index.css";
+
 
 const i18n = createI18n({
   legacy: false,
@@ -16,7 +19,6 @@ const i18n = createI18n({
   globalInjection: true,
 });
 
-// Create a query client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
